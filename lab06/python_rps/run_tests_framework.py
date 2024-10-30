@@ -1,4 +1,4 @@
-'''
+"""
 PLEASE READ CAREFULLY
 
 1. BACKGROUND / SET-UP
@@ -34,24 +34,42 @@ To run these tests, issue the following command on the CLI
     python3 run_tests_framework.py --verbose
 
 Good luck!
-'''
-
+"""
 
 import unittest
+
 from your_task import hello_world, rps
 
 
 class TestStringMethods(unittest.TestCase):
 
     def test_hello_world(self):
-        self.assertEqual(hello_world(), 'Hello world!')
+        self.assertEqual(hello_world(), "Hello world!")
 
     def test_paper_beats_rock(self):
-        self.assertEqual(rps('rock', 'paper'), 'Paper wins!')
-        self.assertEqual(rps('paper', 'rock'), 'Paper wins!')
+        self.assertEqual(rps("rock", "paper"), "Paper wins!")
+        self.assertEqual(rps("paper", "rock"), "Paper wins!")
 
     # add additional tests below
 
+    def test_rock_beats_scissors(self):
+        self.assertEqual(rps("rock", "scissors"), "Rock wins!")
+        self.assertEqual(rps("scissors", "rock"), "Rock wins!")
 
-if __name__ == '__main__':
+    def test_scissors_beats_paper(self):
+        self.assertEqual(rps("scissors", "paper"), "Scissors wins!")
+        self.assertEqual(rps("paper", "scissors"), "Scissors wins!")
+
+    def test_ties(self):
+        self.assertEqual(rps("rock", "rock"), "Tie!")
+        self.assertEqual(rps("paper", "paper"), "Tie!")
+        self.assertEqual(rps("scissors", "scissors"), "Tie!")
+
+    def test_misinput(self):
+        self.assertEqual(rps("rock", "skissors"), "Invalid")
+        self.assertEqual(rps("skizzors", "rock"), "Invalid")
+        self.assertEqual(rps("pauper", "sckizzors"), "Invalid")
+
+
+if __name__ == "__main__":
     unittest.main()
