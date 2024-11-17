@@ -5,7 +5,7 @@ export default function Profile({ name, picture }) {
     return (
         <section className="profile">
             <h3>{name}</h3>
-            <img scr={picture} />
+            <img src={picture} />
         </section>
     );
 }
