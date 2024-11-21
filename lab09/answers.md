@@ -1,22 +1,29 @@
 ## SQL Questions
 1. SELECT - Retrieving Data. Write a query to list the titles and release years of all movies in the film table.
 
-
+select title, release_year from film;
 
 
 2. WHERE - Filtering Data. Write a query to find all customers whose last name starts with the letter 'S'.
 
-
+select last_name from customer where last_name like 'S%';
 
 
 3. ORDER BY - Sorting Results. List all films titles and their durations, sorted by their rental duration in descending order. If two films have the same rental duration, sort them alphabetically by title.
 
-
+select title, rental_duration from film order by rental_duration DESC, title;
 
 
 4. JOIN - Combining Tables. Write a query to list all films along with their categories. Show the film title and category name.
 
-
+select 
+    film.title, category.name 
+from 
+    film 
+inner join 
+    film_category on film.film_id = film_category.film_id 
+inner join 
+    category on film_category.category_id = category.category_id;
 
 
 5. AGGREGATE FUNCTIONS - Summarizing Data. Write a query to find the average rental duration for movies in each category.
