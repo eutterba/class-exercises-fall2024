@@ -1,28 +1,23 @@
-import React from 'react';
-import { Image } from 'antd';
+import React, { useRef } from 'react';
+import { Image, InputNumber } from 'antd';
 import { Carousel } from 'antd';
 import { Form } from "antd";
 import { useState } from 'react';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Input, Radio, Tag } from 'antd';
-
-const customizeRequiredMark = (label, { required }) => (
-    <>
-        {required ? <Tag color="error">Required</Tag> : <Tag color="warning">optional</Tag>}
-        {label}
-    </>
-);
-const [form] = Form.useForm();
-const [requiredMark, setRequiredMarkType] = useState('optional');
-const onRequiredTypeChange = ({ requiredMarkValue }) => {
-    setRequiredMarkType(requiredMarkValue);
+import { Button, Input } from 'antd';
+const onFinish = (values) => {
+    console.log('Success:', values);
 };
+const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+};
+
+
 
 const onChange = (currentSlide) => {
     console.log(currentSlide);
 };
 
-const [tracks, setTracks] = useState([]);
+
 
 export default function App() {
 
@@ -65,6 +60,12 @@ export default function App() {
         }
     ];
 
+    const [tracks, setTracks] = useState([]);
+
+    function trackToJsx(tracksJSON) {
+
+    }
+
     function albumToJSX(albumJSON) {
         return (
             <div key={albumJSON.id}>
@@ -74,6 +75,23 @@ export default function App() {
         )
     }
 
+    async function fetchData() {
+        const baseURL = 'https://www.apitutor.org/spotify/simple/v1/search';
+        const url = `${baseURL}?q=${searchTerm}&type=track&limit=${limit}`;
+        const request = await fetch(url);
+        const data = await request.json();
+        console.log(data);
+        // set state variable to redraw...
+        setTracks(tracks.push);
+    }
+
+    const searchTerm = useRef();
+    const limit = useRef();
+
+    const handleSubmit = () => {
+        console.log("Search term value", searchTerm.current.Input.value);
+        console.log("Limit value", limit.current.InputNumber.value);
+    }
 
 
     return (
@@ -82,31 +100,63 @@ export default function App() {
                 <h1>Spotify Demo</h1>
             </header>
             <main>
-                <Form form={form} layout="vertical" initialValues={{
-                    requiredMarkValue: requiredMark,
+
+                <Form name="basic" labelCol={{
+                    span: 8,
                 }}
-                    onValuesChange={onRequiredTypeChange}
-                    requiredMark={
-                        requiredMark === 'customize' ? customizeRequiredMark : requiredMark
-                    }
+                    wrapperCol={{
+                        span: 16,
+                    }}
+                    style={{
+                        maxWidth: 600,
+                    }}
+                    initialValues={{
+                        remember: true,
+                    }} onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
                 >
-                    <Form.Item label="Required Mark" name="requiredMarkValue">
+                    <Form.Item label="Search Term" name="search term"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input the name of the artist you want',
+                            },
+                        ]}
+                    >
+                        <Input ref={searchTerm} />
                     </Form.Item>
-                    <Form.Item label="search term" required tooltip="This is a required field">
-                        <Input placeholder="Bob Dylan" />
+
+                    <Form.Item label="Limit" name="Limit"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input the number of songs you want',
+                            },
+                        ]}
+                    >
+                        <InputNumber ref={limit} />
                     </Form.Item>
-                    <Form.Item label="Field B" required tooltip="This is a required field">
-                        <Input placeholder="5" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary">Submit</Button>
+
+
+                    <Form.Item label={null}>
+                        <Button type="primary" htmlType="submit" onClick={fetchData}>
+                            Submit
+                        </Button>
                     </Form.Item>
                 </Form>
+
 
                 <div style={carouselStyles}>
                     <Carousel dotPosition="top">
                         {
-                            albums.map(albumToJSX)
+                            <iframe key="1EjQRTG53jsinzk2xlVVJP"
+                                src="https://open.spotify.com/embed/track/1EjQRTG53jsinzk2xlVVJP?utm_source=generator"
+                                width="100%" border="0" height="352"
+                                frameBorder="0" allow="autoplay; 
+                            clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                                loading="lazy"></iframe>
+
                         }
                     </Carousel>
                 </div>
