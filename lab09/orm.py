@@ -6,6 +6,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.schema import MetaData
 from sqlalchemy.sql import text
+from sqlalchemy import or_
 
 PORT = "5433"
 
@@ -67,6 +68,13 @@ async def model_examples(engine):
     async with AsyncSession(engine) as session:
         customers = await session.execute(
             select(Customer).where(Customer.last_name.startswith("P"))
+        )
+        for customer in customers.scalars().all():
+            print(customer.last_name)
+
+    async with AsyncSession(engine) as session:
+        customers = await session.execute(
+            select(Customer).where(or_(Customer.last_name.endswith("n"),(Customer.last_name.endswith("a"))))
         )
         for customer in customers.scalars().all():
             print(customer.last_name)
