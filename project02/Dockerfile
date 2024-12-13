@@ -1,4 +1,4 @@
-from python:3.11
+FROM python:3.11
 COPY ./backend /app
 # COPY --from=0 /ui/dist /app/ui/dist
 WORKDIR /app
