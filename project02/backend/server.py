@@ -36,17 +36,33 @@ async def startup():
 @app.get("/api/departments/", response_model=List[str])
 async def get_department_codes(db: AsyncSession = Depends(get_db)):
     # replace with your code...
-    return []
+
+    result = await db.execute(
+        select(models.Course.department).distinct()
+        .order_by(models.Course.department)
+    )
+    departments = result.scalars().all()
+    
+    return departments
+
 
 
 # Task 2
 # Note: replace response_model=object with response_model=User once you've got this working
-@app.get("/api/users/{username}", response_model=object)
+@app.get("/api/users/{username}", response_model=serializers.User)
 async def get_users_by_username(
     username: str, db: AsyncSession = Depends(get_db)
 ):
     # replace with your code...
-    return {}
+    result = await db.execute(
+        select(models.User).where(models.User.username == username)
+    )
+    user = result.scalars().first()
+
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+   
+    return user
 
 
 # Task 3
@@ -56,7 +72,18 @@ async def get_courses(
     instructor: str = Query(None),
     department: str = Query(None),
     hours: int = Query(None),
+    diversity_intensive: bool = Query(None),
+    diversity_intensive_r: bool = Query(None),
+    honors: bool = Query(None),
+    days: str = Query(None),
+    first_year_seminar: bool = Query(None),
+    arts: bool = Query(None),
+    service_learning: bool = Query(None),
+    open: bool = Query(None),
+
     db: AsyncSession = Depends(get_db),
+    
+
 ):
 
     # base query to "courses" table that also asks SQLAlchemy
@@ -86,6 +113,30 @@ async def get_courses(
                 models.Instructor.first_name.ilike(f"%{instructor}%"),
             )
         )
+
+    if open:
+        query= query.where(models.Course.open == True)
+
+    if days:
+        query = query.where(models.Course.days.ilike(f"%{days}%"))
+
+    if first_year_seminar:
+        query= query.where(models.Course.first_year_seminar == True)
+
+    if diversity_intensive:
+        query= query.where(models.Course.diversity_intensive == True)
+
+    if diversity_intensive_r:
+        query= query.where(models.Course.diversity_intensive_r == True)
+
+    if arts:
+        query= query.where(models.Course.arts == True)
+
+    if honors:
+        query= query.where(models.Course.honors == True)
+
+    if service_learning:
+        query= query.where(models.Course.service_learning == True)
 
     result = await db.execute(
         query.order_by(models.Course.department, models.Course.code)

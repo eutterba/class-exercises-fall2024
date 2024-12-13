@@ -10,6 +10,7 @@ import {
     deleteCourseFromSchedule,
     addCourseToSchedule,
 } from "./services/api.jsx";
+import Course from "./components/Course.jsx";
 
 export default function App() {
     const [courseList, setCourseList] = useState([]);
@@ -45,6 +46,9 @@ export default function App() {
 
             const scheduleData = await fetchSchedule(userData.username);
             setSchedule(scheduleData);
+
+
+
         }
         initializeData();
     }, []);

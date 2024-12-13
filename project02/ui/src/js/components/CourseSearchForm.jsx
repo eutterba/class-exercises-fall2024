@@ -11,6 +11,7 @@ import {
     Switch,
     Space,
 } from "antd";
+import { getOverflowOptions } from "antd/es/_util/placements";
 
 export default function CourseSearchForm({ fetchCourses }) {
     const classificationOpts = [
@@ -21,6 +22,19 @@ export default function CourseSearchForm({ fetchCourses }) {
         { key: "honors", value: "Honors" },
         { key: "service", value: "Service Learning" },
     ];
+    const [departments, setDepartments] = useState([]);
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            const response = await fetch('http://localhost:8000/api/departments');
+            const data = await response.json();
+            setDepartments(data);
+
+        };
+        fetchDepartments();
+    }, []);
+
+
 
     const handleFormSubmit = (formData) => {
         console.log("Here's the form data:", formData);
@@ -78,13 +92,13 @@ export default function CourseSearchForm({ fetchCourses }) {
                                 that are coming from the /api/departments endpoint. 
                                 You will need to use the useEffect and useState React 
                                 functions. 
-                            */}
-                            <Select.Option key="CSCI" value="CSCI">
-                                CSCI
-                            </Select.Option>
-                            <Select.Option key="NM" value="NM">
-                                NM
-                            </Select.Option>
+                            */
+                                departments.map((department) => (
+                                    <Select.Option key={department} value={department}>
+                                        {department}
+                                    </Select.Option>
+                                ))
+                            }
                         </Select>
                     </Form.Item>
 
